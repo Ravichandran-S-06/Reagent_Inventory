@@ -127,8 +127,8 @@ function AddReagent() {
             onChange={handleChange}
             required
             style={styles.input}
-            pattern="[A-Za-z ]+"
-            title="Name can only contain letters and spaces"
+            pattern="[A-Za-z0-9 ]+"
+            title="Name can only contain letters, numbers, and spaces"
           />
         </div>
         <div style={styles.formGroup}>
