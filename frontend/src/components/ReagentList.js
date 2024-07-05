@@ -162,12 +162,14 @@ function ReagentList() {
       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     },
     tableContainer: {
-      overflowY: "auto",
       flexGrow: 1,
+      overflowY: "auto",
+      position: "relative",
     },
     table: {
-      width: "100%",
+      // width: "100%",
       borderCollapse: "collapse",
+      
     },
     th: {
       color: "white",
@@ -176,8 +178,8 @@ function ReagentList() {
       padding: "10px",
       textAlign: "left",
       wordBreak: "keep-all",
-      position: "sticky",
-      top: -1,
+      position: "fixed",
+      top: 0,
       zIndex: 1,
     },
     td: {
@@ -224,7 +226,11 @@ function ReagentList() {
           </div>
         </div>
       </div>
+
+
+      {/* table container div starts here */}
       <div style={styles.tableContainer}>
+      <div style={styles.tableWrapper}>
         <table style={styles.table}>
           <thead>
             <tr>
@@ -321,6 +327,7 @@ function ReagentList() {
             })}
           </tbody>
         </table>
+      </div>
       </div>
       <ToastContainer />
     </div>

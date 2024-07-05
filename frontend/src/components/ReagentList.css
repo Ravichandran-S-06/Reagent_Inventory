@@ -16,15 +16,21 @@ body {
     z-index: 1000;
   }
   
-  .reagent-list .tableContainer {
-    margin-top: 100px; /* Adjust based on the height of the fixed header */
-    height: calc(100vh - 150px); /* Adjust based on the total height of other fixed elements */
-    overflow-y: auto;
+  .reagent-list .tableContainer{
+    border: 5px solid black;
+  }
+
+  .reagent-list .tableWrapper {
+    /* margin-top: 100px;  */
+    /* height: calc(100vh - 150px);  */
+    max-height: 300px;
+    
     padding-top: 10px;
   }
+
   ::-webkit-scrollbar {
-    width: 10px; /* Width of the scrollbar */
-    height: 6px; /* Height of the scrollbar */
+    width: 9px; /* Width of the scrollbar */
+    height: 5px; /* Height of the scrollbar */
   }
   
   /* Styling the track (background of the scrollbar) */
@@ -34,5 +40,5 @@ body {
   
   /* Styling the thumb (the draggable part of the scrollbar) */
   ::-webkit-scrollbar-thumb {
-    background-color: black; /* Color of the scrollbar thumb */
+    background-color: rgb(0, 66, 12); /* Color of the scrollbar thumb */
   }
