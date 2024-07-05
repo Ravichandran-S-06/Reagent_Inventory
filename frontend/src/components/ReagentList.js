@@ -226,11 +226,7 @@ function ReagentList() {
           </div>
         </div>
       </div>
-
-
-      {/* table container div starts here */}
-      <div style={styles.tableContainer}>
-      <div style={styles.tableWrapper}>
+      <div className="tableContainer" style={styles.tableContainer}>
         <table style={styles.table}>
           <thead>
             <tr>

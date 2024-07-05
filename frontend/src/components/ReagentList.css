@@ -27,6 +27,7 @@ body {
     
     padding-top: 10px;
   }
+<<<<<<< HEAD
 
   ::-webkit-scrollbar {
     width: 9px; /* Width of the scrollbar */
@@ -42,3 +43,19 @@ body {
   ::-webkit-scrollbar-thumb {
     background-color: rgb(0, 66, 12); /* Color of the scrollbar thumb */
   }
+=======
+ 
+
+  /* ReagentList.css */
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tableContainer::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.tableContainer {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+>>>>>>> 073bfaf34a33838a4ef766d22ff52f52ce1c95f9
