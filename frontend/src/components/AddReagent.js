@@ -11,7 +11,8 @@ function AddReagent() {
     quantity_measure: "",
     source: "",
     expiry: "",
-    last_updated: moment().format("YYYY-MM-DD"), // Initialize last_updated with current date
+    packing_type: "",
+    last_updated: moment().format("YYYY-MM-DD"),
   });
   const navigate = useNavigate();
 
@@ -57,7 +58,7 @@ function AddReagent() {
 
     const newReagent = {
       ...reagent,
-      last_updated: moment().format("YYYY-MM-DD"), // Update last_updated before submission
+      last_updated: moment().format("YYYY-MM-DD"),
     };
 
     fetch("http://localhost:5000/reagents", {
@@ -67,13 +68,25 @@ function AddReagent() {
       },
       body: JSON.stringify(newReagent),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.message || "Failed to add reagent");
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         console.log("Success:", data);
+        toast.success("Reagent added successfully!", { theme: "dark" });
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Error:", error.message);
+        toast.error(
+          error.message || "Failed to add reagent. Please try again.",
+          { theme: "dark" }
+        );
       });
   };
 
@@ -125,18 +138,18 @@ function AddReagent() {
       width: "350px",
       minWidth: "350px",
       maxWidth: "350px",
-      backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent white background
+      backgroundColor: "rgba(255, 255, 255, 0.5)",
       padding: "20px",
       borderRadius: "10px",
-      boxShadow: "0 0 15px rgba(0, 100, 0, 0.3)", // Darker green-tinted box shadow
-      border: "1px solid rgba(0, 255, 0, 0.4)", // Green tinted border
-      backdropFilter: "blur(10px)", // Blur effect (experimental)
+      boxShadow: "0 0 15px rgba(0, 100, 0, 0.3)",
+      border: "1px solid rgba(0, 255, 0, 0.4)",
+      backdropFilter: "blur(10px)",
     },
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Add New Reagent.</h1>
+      <h1 style={styles.title}>Add New Reagent</h1>
       <form onSubmit={handleSubmit} style={styles.form_container_add}>
         <div style={styles.formGroup}>
           <input
@@ -164,6 +177,16 @@ function AddReagent() {
             type="text"
             name="quantity_measure"
             placeholder="Quantity Measure"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <input
+            type="text"
+            name="packing_type"
+            placeholder="Packing Type"
             onChange={handleChange}
             required
             style={styles.input}

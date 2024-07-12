@@ -20,6 +20,7 @@ def init_db():
                     quantity_measure TEXT,
                     source TEXT,
                     expiry DATE,
+                    packing_type TEXT,
                     last_updated DATE)''')
     conn.commit()
     conn.close()
@@ -32,11 +33,17 @@ def reagents():
     if request.method == 'POST':
         data = request.json
         current_date = datetime.now().strftime('%Y-%m-%d')
-        conn.execute('INSERT INTO reagents (name, quantity, quantity_measure, source, expiry, last_updated) VALUES (?, ?, ?, ?, ?, ?)',
-                     (data['name'], data['quantity'], data['quantity_measure'], data['source'], data['expiry'], current_date))
-        conn.commit()
-        return jsonify({"message": "Reagent added successfully"}), 201
-    
+        try:
+            conn.execute('INSERT INTO reagents (name, quantity, quantity_measure, source, expiry, packing_type, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                         (data['name'], data['quantity'], data['quantity_measure'], data['source'], data['expiry'], data['packing_type'], current_date))
+            conn.commit()
+            return jsonify({"message": "Reagent added successfully"}), 201
+        except sqlite3.Error as e:
+            conn.rollback()
+            return jsonify({"error": str(e)}), 500
+        finally:
+            conn.close()
+
     reagents = conn.execute('SELECT * FROM reagents').fetchall()
     conn.close()
     return jsonify([dict(ix) for ix in reagents])
@@ -48,19 +55,28 @@ def reagent(id):
     if request.method == 'PUT':
         data = request.json
         current_date = datetime.now().strftime('%Y-%m-%d')
-        conn.execute('UPDATE reagents SET name=?, quantity=?, quantity_measure=?, source=?, expiry=?, last_updated=? WHERE id=?',
-                     (data['name'], data['quantity'], data['quantity_measure'], data['source'], data['expiry'], current_date, id))
-        conn.commit()
-        conn.close()
-        return jsonify({"message": "Reagent updated successfully"})
+        try:
+            conn.execute('UPDATE reagents SET name=?, quantity=?, quantity_measure=?, source=?, expiry=?, packing_type=?, last_updated=? WHERE id=?',
+                         (data['name'], data['quantity'], data['quantity_measure'], data['source'], data['expiry'], data['packing_type'], current_date, id))
+            conn.commit()
+            return jsonify({"message": "Reagent updated successfully"})
+        except sqlite3.Error as e:
+            conn.rollback()
+            return jsonify({"error": str(e)}), 500
+        finally:
+            conn.close()
     
     elif request.method == 'DELETE':
-        conn.execute('DELETE FROM reagents WHERE id=?', (id,))
-        conn.commit()
-        conn.close()
-        return jsonify({"message": "Reagent deleted successfully"})
+        try:
+            conn.execute('DELETE FROM reagents WHERE id=?', (id,))
+            conn.commit()
+            return jsonify({"message": "Reagent deleted successfully"})
+        except sqlite3.Error as e:
+            conn.rollback()
+            return jsonify({"error": str(e)}), 500
+        finally:
+            conn.close()
     
-    # Fetch reagent details
     reagent = conn.execute('SELECT * FROM reagents WHERE id=?', (id,)).fetchone()
     conn.close()
     
@@ -85,7 +101,6 @@ def expiring_soon():
 def search_reagents():
     query = request.json.get('query', '')
 
-    # Perform search logic (example: simple substring search)
     conn = get_db_connection()
     results = []
     for row in conn.execute('SELECT * FROM reagents'):

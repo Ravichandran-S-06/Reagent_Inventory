@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './ReagentList.css';
+import "./ReagentList.css";
 import DeleteConfirmation from "./DeleteConfirmation";
 import moment from "moment";
 
@@ -14,12 +14,17 @@ function ReagentList() {
   const [sortCriteria, setSortCriteria] = useState("last_updated");
 
   useEffect(() => {
-    fetch("http://localhost:5000/reagents")
-      .then((response) => response.json())
-      .then((data) => setReagents(data));
+    fetchReagents();
   }, []);
 
-  const notify_Delete_Toast = (message) => {
+  const fetchReagents = () => {
+    fetch("http://localhost:5000/reagents")
+      .then((response) => response.json())
+      .then((data) => setReagents(data))
+      .catch((error) => console.error("Error fetching reagents:", error));
+  };
+
+  const notifyDeleteToast = (message) => {
     toast.success(message, {
       position: "top-right",
       autoClose: 4000,
@@ -41,11 +46,11 @@ function ReagentList() {
           })
             .then(() => {
               setReagents(reagents.filter((reagent) => reagent.id !== id));
-              notify_Delete_Toast("Reagent deleted successfully !");
+              notifyDeleteToast("Reagent deleted successfully !");
             })
             .catch((error) => {
               console.error("Error deleting reagent:", error);
-              notify_Delete_Toast("Error deleting reagent");
+              notifyDeleteToast("Error deleting reagent");
             });
         }}
       />,
@@ -228,14 +233,15 @@ function ReagentList() {
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={{ ...styles.th, width: "30%" }}>Name</th>
-              <th style={{ ...styles.th, width: "10%" }}>Quantity</th>
+              <th style={{ ...styles.th, width: "20%" }}>Name</th>
+              <th style={{ ...styles.th, width: "8%" }}>Quantity</th>
               <th style={{ ...styles.th, width: "10%" }}>Quantity Measure</th>
-              <th style={styles.th}>Source</th>
-              <th style={styles.th}>Expiry</th>
-              <th style={styles.th}>Days to Expire</th>
-              <th style={styles.th}>Last Updated</th>
-              <th style={styles.th}>Actions</th>
+              <th style={{ ...styles.th, width: "12%" }}>Packing Type</th>
+              <th style={{ ...styles.th, width: "14%" }}>Source</th>
+              <th style={{ ...styles.th, width: "12%" }}>Expiry</th>
+              <th style={{ ...styles.th, width: "10%" }}>Days to Expire</th>
+              <th style={{ ...styles.th, width: "14%" }}>Last Updated</th>
+              <th style={{ ...styles.th, width: "10%" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -248,7 +254,9 @@ function ReagentList() {
                   ? "orange"
                   : "green";
               const backgroundColor = index % 2 === 0 ? "#f9f9f9" : "#e0e0e0";
-              const formattedExpiry = moment(reagent.expiry).format("DD-MM-YYYY");
+              const formattedExpiry = moment(reagent.expiry).format(
+                "DD-MM-YYYY"
+              );
               const formattedLastUpdated = moment(reagent.last_updated).format(
                 "DD-MM-YYYY"
               );
@@ -260,28 +268,37 @@ function ReagentList() {
                   <td
                     style={{
                       ...styles.td,
-                      maxWidth: "30%",
+                      maxWidth: "20%",
                       whiteSpace: "normal",
                     }}
                   >
                     {reagent.name}
                   </td>
-                  <td style={{ ...styles.td, width: "10%" }}>
+                  <td style={{ ...styles.td, width: "8%" }}>
                     {reagent.quantity}
                   </td>
-                 
                   <td style={{ ...styles.td, width: "10%" }}>
                     {reagent.quantity_measure}
                   </td>
-                  <td style={styles.td}>{reagent.source}</td>
-                  <td style={styles.td}>{formattedExpiry}</td>
-                  <td style={styles.td}>{daysToExpire}</td>
-                  <td style={styles.td}>{formattedLastUpdated}</td>
+                  <td style={{ ...styles.td, width: "12%" }}>
+                    {reagent.packing_type}
+                  </td>
+                  <td style={{ ...styles.td, width: "14%" }}>
+                    {reagent.source}
+                  </td>
+                  <td style={{ ...styles.td, width: "12%" }}>
+                    {formattedExpiry}
+                  </td>
+                  <td style={{ ...styles.td, width: "10%" }}>{daysToExpire}</td>
+                  <td style={{ ...styles.td, width: "14%" }}>
+                    {formattedLastUpdated}
+                  </td>
                   <td
                     style={{
                       ...styles.td,
                       verticalAlign: "middle",
                       textAlign: "center",
+                      width: "10%",
                     }}
                   >
                     <Link
@@ -326,4 +343,5 @@ function ReagentList() {
     </div>
   );
 }
+
 export default ReagentList;
