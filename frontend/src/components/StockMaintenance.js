@@ -1,3 +1,4 @@
+import { faFontAwesome } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -98,6 +99,7 @@ function StockMaintenance() {
         return response.json();
       })
       .then((data) => {
+<<<<<<< HEAD
         // After successful stock update, send an email
         const emailData = {
           dbData: reagents,
@@ -113,6 +115,31 @@ function StockMaintenance() {
           .then((emailResponse) => {
             if (!emailResponse.ok) {
               throw new Error("Failed to send email");
+=======
+
+        // After successful stock update, send an email
+        // const emailData = {
+        //   when: new Date().toISOString(),
+        //   what: selectedReagent.name,
+        //   howMuch: updatedQuantity,
+        // };
+
+        // After successful stock update, send an email
+        const emailData = {
+          dbData: reagents
+        };
+
+        fetch('http://localhost:5000/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        })
+          .then(emailResponse => {
+            if (!emailResponse.ok) {
+              throw new Error('Failed to send email');
+>>>>>>> d8a361b28e96d125314f540b865f8449b807144b
             }
             return emailResponse.json();
           })
@@ -121,7 +148,11 @@ function StockMaintenance() {
               theme: "dark",
             });
           })
+<<<<<<< HEAD
           .catch((emailError) => {
+=======
+          .catch(emailError => {
+>>>>>>> d8a361b28e96d125314f540b865f8449b807144b
             toast.error("Failed to send email: " + emailError.message, {
               theme: "dark",
             });
@@ -266,7 +297,11 @@ function StockMaintenance() {
             <>
               <div className="form-group">
                 <label htmlFor="removed-expiry">
+<<<<<<< HEAD
                   Quantity Issued (Removed):
+=======
+                  Quantity Issued :
+>>>>>>> d8a361b28e96d125314f540b865f8449b807144b
                 </label>
                 <input
                   type="number"
@@ -303,6 +338,7 @@ function StockMaintenance() {
                 </p>
               </div>
               <div className="form-group">
+<<<<<<< HEAD
                 <p>
                   <strong
                     style={{
@@ -324,6 +360,22 @@ function StockMaintenance() {
                     &#215; {selectedReagent.quantity_measure}
                   </div>
                 </p>
+=======
+
+                <p>
+                  <strong style={{ fontFamily: 'Arial, sans-serif',fontSize:"18px" }}>
+                    Total Quantity: {calculateTotalQuantity()}
+                  </strong> &#160;
+                  <div style={{ fontWeight: '300', fontFamily: 'Arial, sans-serif',display:"inline",fontSize:"13px" }}>
+                    &#215; {selectedReagent.quantity_measure}
+                  </div>
+
+                </p>
+
+
+
+
+>>>>>>> d8a361b28e96d125314f540b865f8449b807144b
               </div>
               <div className="form-actions">
                 <button type="submit">Update Stock</button>
