@@ -48,13 +48,8 @@ function EditReagent() {
     quantity_measure: "",
     source: "",
     expiry: "",
-<<<<<<< HEAD
     setAlert: "",
     setQuantity: "",
-=======
-    setAlert:"",
-    setQuantity:"",
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
     last_updated: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -88,18 +83,6 @@ function EditReagent() {
       return;
     }
 
-<<<<<<< HEAD
-=======
-    //create a validation to quantity_measure, it must always be a alpha numeric
-
-    // if (!/^[a-zA-Z]*$/.test(reagent.quantity_measure)) {
-    //   toast.error("Measure must only include characters.", {
-    //     theme: "dark",
-    //   });
-    //   return;
-    // }
-
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
     if (!/^[a-zA-Z0-9\s]*$/.test(reagent.quantity_measure)) {
       toast.error("Measure must only include alphanumeric characters.", {
         theme: "dark",
@@ -200,7 +183,6 @@ function EditReagent() {
           />
         </div>
         <div className="form-group">
-<<<<<<< HEAD
           <label htmlFor="packingtype">Packing Type:</label>
           <input
             style={styles.input}
@@ -208,14 +190,6 @@ function EditReagent() {
             id="packingtype"
             name="packingtype"
             value={reagent.packingtype}
-=======
-          <label htmlFor="packing-type">Packing Type:</label>
-          <input
-            type="text"
-            id="packing-type"
-            name="packing-type"
-            value={reagent.quantity}
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
             onChange={handleChange}
             required
           />
@@ -270,14 +244,9 @@ function EditReagent() {
           />
         </div>
         <div className="form-group">
-<<<<<<< HEAD
           <label htmlFor="setAlert">Set Alert (in days):</label>
           <input
             style={styles.input}
-=======
-          <label htmlFor="setAlert">Set Alert</label>
-          <input
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
             type="number"
             id="setAlert"
             name="setAlert"
@@ -285,7 +254,6 @@ function EditReagent() {
             onChange={handleChange}
             placeholder="in days"
             required
-<<<<<<< HEAD
             min="0"
           />
         </div>
@@ -293,26 +261,14 @@ function EditReagent() {
           <label htmlFor="setQuantity">Set Alert (in quantities):</label>
           <input
             style={styles.input}
-=======
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="setQuantity">Set Alert</label>
-          <input
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
             type="number"
             id="setQuantity"
             name="setQuantity"
             value={reagent.setQuantity}
             onChange={handleChange}
-<<<<<<< HEAD
             placeholder="in quantities"
             required
             min="0"
-=======
-            placeholder="in Quantities"
-            required
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
           />
         </div>
         <button type="submit">Save Changes</button>
@@ -358,13 +314,8 @@ const styles = {
     maxWidth: "400px",
     margin: "0 auto",
     minWidth: "400px",
-<<<<<<< HEAD
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     padding: "8px 26px",
-=======
-    backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent white background
-    padding: "20px",
->>>>>>> d8a361b28e96d125314f540b865f8449b807144b
     borderRadius: "10px",
     boxShadow: "0 0 10px rgba(0, 100, 0, 0.3)",
     border: "1px solid rgba(0, 255, 0, 0.4)",
