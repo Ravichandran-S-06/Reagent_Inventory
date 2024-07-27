@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ReagentList.css";
+import './ReagentList.css';
 import DeleteConfirmation from "./DeleteConfirmation";
 import moment from "moment";
 
@@ -14,17 +14,12 @@ function ReagentList() {
   const [sortCriteria, setSortCriteria] = useState("last_updated");
 
   useEffect(() => {
-    fetchReagents();
-  }, []);
-
-  const fetchReagents = () => {
     fetch("http://localhost:5000/reagents")
       .then((response) => response.json())
-      .then((data) => setReagents(data))
-      .catch((error) => console.error("Error fetching reagents:", error));
-  };
+      .then((data) => setReagents(data));
+  }, []);
 
-  const notifyDeleteToast = (message) => {
+  const notify_Delete_Toast = (message) => {
     toast.success(message, {
       position: "top-right",
       autoClose: 4000,
@@ -46,11 +41,11 @@ function ReagentList() {
           })
             .then(() => {
               setReagents(reagents.filter((reagent) => reagent.id !== id));
-              notifyDeleteToast("Reagent deleted successfully !");
+              notify_Delete_Toast("Reagent deleted successfully !");
             })
             .catch((error) => {
               console.error("Error deleting reagent:", error);
-              notifyDeleteToast("Error deleting reagent");
+              notify_Delete_Toast("Error deleting reagent");
             });
         }}
       />,
@@ -217,11 +212,11 @@ function ReagentList() {
         <div style={styles.colorLabelContainer}>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.greenDot }}></span> ≥
-            30 days
+            Alert
           </div>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.orangeDot }}></span>{" "}
-            &lt; 30 days
+            &lt; Alert
           </div>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.redDot }}></span> 0
@@ -233,30 +228,31 @@ function ReagentList() {
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={{ ...styles.th, width: "20%" }}>Name</th>
-              <th style={{ ...styles.th, width: "8%" }}>Quantity</th>
-              <th style={{ ...styles.th, width: "10%" }}>Quantity Measure</th>
-              <th style={{ ...styles.th, width: "12%" }}>Packing Type</th>
-              <th style={{ ...styles.th, width: "14%" }}>Source</th>
-              <th style={{ ...styles.th, width: "12%" }}>Expiry</th>
-              <th style={{ ...styles.th, width: "10%" }}>Days to Expire</th>
-              <th style={{ ...styles.th, width: "14%" }}>Last Updated</th>
-              <th style={{ ...styles.th, width: "10%" }}>Actions</th>
+              <th style={{ ...styles.th, width: "21%" }}>Name</th>
+              <th style={{ ...styles.th, width: "5%" }}>Units Available</th>
+              <th style={{ ...styles.th, width: "9%" }}>Packing Type</th>
+              <th style={{ ...styles.th, width: "9%" }}>Unit Size</th>
+              <th style={{ ...styles.th, width: "10%" }}>Source</th>
+              <th style={{ ...styles.th, width: "9%" }}>Expiry</th>
+              <th style={{ ...styles.th, width: "9%" }}>Days to Expire</th>
+              <th style={{ ...styles.th, width: "10%" }}>Last Updated</th>
+              <th style={{...styles.th,width: "10%"}}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredReagents.map((reagent, index) => {
+              const Alert = reagent.setAlert
               const daysToExpire = getDaysToExpire(reagent.expiry);
+              const quantityAlert = reagent.setQuantity
+              const quantity = reagent.quantity
               const textColor =
                 daysToExpire === 0
                   ? "red"
-                  : daysToExpire < 30
-                  ? "orange"
-                  : "green";
+                  : (daysToExpire <= Alert) || (quantity <= quantityAlert)
+                    ? "orange"
+                    : "green";
               const backgroundColor = index % 2 === 0 ? "#f9f9f9" : "#e0e0e0";
-              const formattedExpiry = moment(reagent.expiry).format(
-                "DD-MM-YYYY"
-              );
+              const formattedExpiry = moment(reagent.expiry).format("DD-MM-YYYY");
               const formattedLastUpdated = moment(reagent.last_updated).format(
                 "DD-MM-YYYY"
               );
@@ -268,37 +264,31 @@ function ReagentList() {
                   <td
                     style={{
                       ...styles.td,
-                      maxWidth: "20%",
+                      maxWidth: "30%",
                       whiteSpace: "normal",
                     }}
                   >
                     {reagent.name}
                   </td>
-                  <td style={{ ...styles.td, width: "8%" }}>
+                  <td style={{ ...styles.td, width: "5%" }}>
                     {reagent.quantity}
                   </td>
                   <td style={{ ...styles.td, width: "10%" }}>
+                    {reagent.packingtype}
+                  </td>
+
+                  <td style={{ ...styles.td, width: "10%" }}>
                     {reagent.quantity_measure}
                   </td>
-                  <td style={{ ...styles.td, width: "12%" }}>
-                    {reagent.packing_type}
-                  </td>
-                  <td style={{ ...styles.td, width: "14%" }}>
-                    {reagent.source}
-                  </td>
-                  <td style={{ ...styles.td, width: "12%" }}>
-                    {formattedExpiry}
-                  </td>
-                  <td style={{ ...styles.td, width: "10%" }}>{daysToExpire}</td>
-                  <td style={{ ...styles.td, width: "14%" }}>
-                    {formattedLastUpdated}
-                  </td>
+                  <td style={{ ...styles.td, width: "10%" }}>{reagent.source}</td>
+                  <td style={{ ...styles.td, width: "10%" }}>{formattedExpiry}</td>
+                  <td style={styles.td}>{daysToExpire}</td>
+                  <td style={styles.td}>{formattedLastUpdated}</td>
                   <td
                     style={{
                       ...styles.td,
                       verticalAlign: "middle",
                       textAlign: "center",
-                      width: "10%",
                     }}
                   >
                     <Link
@@ -343,5 +333,4 @@ function ReagentList() {
     </div>
   );
 }
-
 export default ReagentList;

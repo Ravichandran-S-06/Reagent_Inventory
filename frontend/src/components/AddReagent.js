@@ -7,12 +7,14 @@ import moment from "moment";
 function AddReagent() {
   const [reagent, setReagent] = useState({
     name: "",
+    packingtype:"",
     quantity: "",
     quantity_measure: "",
     source: "",
     expiry: "",
-    packing_type: "",
-    last_updated: moment().format("YYYY-MM-DD"),
+    setAlert:"",
+    setQuantity:"",
+    last_updated: moment().format("YYYY-MM-DD"), // Initialize last_updated with current date
   });
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ function AddReagent() {
   };
 
   const validateForm = () => {
-    const { quantity, quantity_measure, source, expiry } = reagent;
+    const { quantity, quantity_measure, source, expiry,setQuantity } = reagent;
     const currentDate = new Date().toISOString().split("T")[0];
 
     if (quantity < 0 || isNaN(quantity)) {
@@ -29,9 +31,19 @@ function AddReagent() {
       return false;
     }
 
-    if (!/^[a-zA-Z]+-?\d*|\d+[a-zA-Z]+$/.test(quantity_measure)) {
+    if (!/^[a-zA-Z0-9\s]*$/.test(quantity_measure)) {
       toast.error(
         "The measure must include letters, and may include numbers along with letters, but numbers alone are not allowed.",
+        {
+          theme: "dark",
+        }
+      );
+      return false;
+    }
+
+    if (!/^[0-9\s]*$/.test(setQuantity)) {
+      toast.error(
+        "Quantity Alert should always be in Number",
         {
           theme: "dark",
         }
@@ -58,7 +70,7 @@ function AddReagent() {
 
     const newReagent = {
       ...reagent,
-      last_updated: moment().format("YYYY-MM-DD"),
+      last_updated: moment().format("YYYY-MM-DD"), // Update last_updated before submission
     };
 
     fetch("http://localhost:5000/reagents", {
@@ -68,25 +80,13 @@ function AddReagent() {
       },
       body: JSON.stringify(newReagent),
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.message || "Failed to add reagent");
-          });
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        toast.success("Reagent added successfully!", { theme: "dark" });
         navigate("/");
       })
       .catch((error) => {
-        console.error("Error:", error.message);
-        toast.error(
-          error.message || "Failed to add reagent. Please try again.",
-          { theme: "dark" }
-        );
+        console.error("Error:", error);
       });
   };
 
@@ -138,18 +138,18 @@ function AddReagent() {
       width: "350px",
       minWidth: "350px",
       maxWidth: "350px",
-      backgroundColor: "rgba(255, 255, 255, 0.5)",
+      backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent white background
       padding: "20px",
       borderRadius: "10px",
-      boxShadow: "0 0 15px rgba(0, 100, 0, 0.3)",
-      border: "1px solid rgba(0, 255, 0, 0.4)",
-      backdropFilter: "blur(10px)",
+      boxShadow: "0 0 15px rgba(0, 100, 0, 0.3)", // Darker green-tinted box shadow
+      border: "1px solid rgba(0, 255, 0, 0.4)", // Green tinted border
+      backdropFilter: "blur(10px)", // Blur effect (experimental)
     },
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Add New Reagent</h1>
+      <h1 style={styles.title}>Add New Reagent.</h1>
       <form onSubmit={handleSubmit} style={styles.form_container_add}>
         <div style={styles.formGroup}>
           <input
@@ -161,6 +161,16 @@ function AddReagent() {
             style={styles.input}
           />
         </div>
+        <div style={styles.formGroup}>
+          <input
+            type="text"
+            name="packingtype"
+            placeholder="packing type"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          </div>
         <div style={styles.formGroup}>
           <input
             type="number"
@@ -176,17 +186,7 @@ function AddReagent() {
           <input
             type="text"
             name="quantity_measure"
-            placeholder="Quantity Measure"
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <input
-            type="text"
-            name="packing_type"
-            placeholder="Packing Type"
+            placeholder="Unit size / volume"
             onChange={handleChange}
             required
             style={styles.input}
@@ -210,6 +210,34 @@ function AddReagent() {
             type="date"
             id="expiry"
             name="expiry"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label htmlFor="Set Alert" style={styles.label}>
+            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in days</p>
+          </label>
+          <input
+            type="number"
+            id="setAlert"
+            name="setAlert"
+            placeholder="in days"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label htmlFor="Set Alert Quantity" style={styles.label}>
+            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in quantities</p>
+          </label>
+          <input
+            type="number"
+            id="setQuantity"
+            name="setQuantity"
+            placeholder="in Quantities"
             onChange={handleChange}
             required
             style={styles.input}

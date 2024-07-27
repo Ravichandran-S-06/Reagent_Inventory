@@ -47,6 +47,8 @@ function EditReagent() {
     quantity_measure: "",
     source: "",
     expiry: "",
+    setAlert:"",
+    setQuantity:"",
     last_updated: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -80,8 +82,17 @@ function EditReagent() {
       return;
     }
 
-    if (!/^[a-zA-Z]*$/.test(reagent.quantity_measure)) {
-      toast.error("Measure must only include characters.", {
+    //create a validation to quantity_measure, it must always be a alpha numeric
+
+    // if (!/^[a-zA-Z]*$/.test(reagent.quantity_measure)) {
+    //   toast.error("Measure must only include characters.", {
+    //     theme: "dark",
+    //   });
+    //   return;
+    // }
+
+    if (!/^[a-zA-Z0-9\s]*$/.test(reagent.quantity_measure)) {
+      toast.error("Measure must only include alphanumeric characters.", {
         theme: "dark",
       });
       return;
@@ -154,6 +165,17 @@ function EditReagent() {
           />
         </div>
         <div className="form-group">
+          <label htmlFor="packing-type">Packing Type:</label>
+          <input
+            type="text"
+            id="packing-type"
+            name="packing-type"
+            value={reagent.quantity}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
           <label htmlFor="quantity">Quantity:</label>
           <input
             type="number"
@@ -195,6 +217,30 @@ function EditReagent() {
             name="expiry"
             value={reagent.expiry}
             onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="setAlert">Set Alert</label>
+          <input
+            type="number"
+            id="setAlert"
+            name="setAlert"
+            value={reagent.setAlert}
+            onChange={handleChange}
+            placeholder="in days"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="setQuantity">Set Alert</label>
+          <input
+            type="number"
+            id="setQuantity"
+            name="setQuantity"
+            value={reagent.setQuantity}
+            onChange={handleChange}
+            placeholder="in Quantities"
             required
           />
         </div>
@@ -242,7 +288,7 @@ const styles = {
     margin: "0 auto",
     minWidth: "400px",
     backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent white background
-    padding: "40px",
+    padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 0 10px rgba(0, 100, 0, 0.3)", // Darker green-tinted box shadow
     border: "1px solid rgba(0, 255, 0, 0.4)", // Green tinted border
