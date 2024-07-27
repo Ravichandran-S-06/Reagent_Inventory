@@ -1,6 +1,10 @@
-install the required modules using pip install
-python app.py
+# Frontend
 
-cd frontend
-npm install
-npm start
+-cd frontend
+-npm install
+-npm start
+
+# Backend
+
+-pip install flask flask_cors
+-python app.py

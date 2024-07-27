@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './ReagentList.css';
+import "./ReagentList.css";
 import DeleteConfirmation from "./DeleteConfirmation";
 import moment from "moment";
 
@@ -85,6 +85,8 @@ function ReagentList() {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       } else if (sortCriteria === "days_to_expire") {
         return getDaysToExpire(a.expiry) - getDaysToExpire(b.expiry);
+      } else if (sortCriteria === "quantity") {
+        return a.quantity - b.quantity;
       } else {
         return moment(b.last_updated).diff(moment(a.last_updated));
       }
@@ -192,13 +194,14 @@ function ReagentList() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.h1}>Reagents List</h1>
+      <h1 style={styles.h1}>Reagents List.</h1>
       <div style={styles.inputContainer}>
         <div style={styles.sortContainer}>
           <select style={styles.sortSelect} onChange={handleSort}>
             <option value="last_updated">Sort by: Modify</option>
-            <option value="name">Sort by: Name</option>
-            <option value="days_to_expire">Sort by: Days to Expire</option>
+            <option value="name">Name</option>
+            <option value="days_to_expire">Days to Expire</option>
+            <option value="quantity">Units Available</option>
           </select>
         </div>
         <input
@@ -233,26 +236,29 @@ function ReagentList() {
               <th style={{ ...styles.th, width: "9%" }}>Packing Type</th>
               <th style={{ ...styles.th, width: "9%" }}>Unit Size</th>
               <th style={{ ...styles.th, width: "10%" }}>Source</th>
-              <th style={{ ...styles.th, width: "9%" }}>Expiry</th>
+              <th style={{ ...styles.th, width: "9%" }}>Expiry_date</th>
               <th style={{ ...styles.th, width: "9%" }}>Days to Expire</th>
               <th style={{ ...styles.th, width: "10%" }}>Last Updated</th>
-              <th style={{...styles.th,width: "10%"}}>Actions</th>
+              <th style={{ ...styles.th, width: "10%" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredReagents.map((reagent, index) => {
-              const Alert = reagent.setAlert
+              const Alert = reagent.setAlert;
               const daysToExpire = getDaysToExpire(reagent.expiry);
-              const quantityAlert = reagent.setQuantity
-              const quantity = reagent.quantity
+              const quantityAlert = reagent.setQuantity;
+              const quantity = reagent.quantity;
               const textColor =
-                daysToExpire === 0
+                daysToExpire === 0 || quantity === 0
                   ? "red"
-                  : (daysToExpire <= Alert) || (quantity <= quantityAlert)
-                    ? "orange"
-                    : "green";
+                  : daysToExpire <= Alert || quantity <= quantityAlert
+                  ? "orange"
+                  : "green";
+
               const backgroundColor = index % 2 === 0 ? "#f9f9f9" : "#e0e0e0";
-              const formattedExpiry = moment(reagent.expiry).format("DD-MM-YYYY");
+              const formattedExpiry = moment(reagent.expiry).format(
+                "DD-MM-YYYY"
+              );
               const formattedLastUpdated = moment(reagent.last_updated).format(
                 "DD-MM-YYYY"
               );
@@ -280,8 +286,12 @@ function ReagentList() {
                   <td style={{ ...styles.td, width: "10%" }}>
                     {reagent.quantity_measure}
                   </td>
-                  <td style={{ ...styles.td, width: "10%" }}>{reagent.source}</td>
-                  <td style={{ ...styles.td, width: "10%" }}>{formattedExpiry}</td>
+                  <td style={{ ...styles.td, width: "10%" }}>
+                    {reagent.source}
+                  </td>
+                  <td style={{ ...styles.td, width: "10%" }}>
+                    {formattedExpiry}
+                  </td>
                   <td style={styles.td}>{daysToExpire}</td>
                   <td style={styles.td}>{formattedLastUpdated}</td>
                   <td
@@ -333,4 +343,5 @@ function ReagentList() {
     </div>
   );
 }
+
 export default ReagentList;

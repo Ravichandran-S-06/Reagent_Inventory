@@ -1,4 +1,3 @@
-import { faFontAwesome } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -99,29 +98,21 @@ function StockMaintenance() {
         return response.json();
       })
       .then((data) => {
-
-        // After successful stock update, send an email
-        // const emailData = {
-        //   when: new Date().toISOString(),
-        //   what: selectedReagent.name,
-        //   howMuch: updatedQuantity,
-        // };
-
         // After successful stock update, send an email
         const emailData = {
-          dbData: reagents
+          dbData: reagents,
         };
 
-        fetch('http://localhost:5000/send-email', {
-          method: 'POST',
+        fetch("http://localhost:5000/send-email", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(emailData),
         })
-          .then(emailResponse => {
+          .then((emailResponse) => {
             if (!emailResponse.ok) {
-              throw new Error('Failed to send email');
+              throw new Error("Failed to send email");
             }
             return emailResponse.json();
           })
@@ -130,7 +121,7 @@ function StockMaintenance() {
               theme: "dark",
             });
           })
-          .catch(emailError => {
+          .catch((emailError) => {
             toast.error("Failed to send email: " + emailError.message, {
               theme: "dark",
             });
@@ -178,17 +169,16 @@ function StockMaintenance() {
             box-sizing: border-box;
             overflow-y: hidden;
           }
-           
-          .form-container { 
-          width: 350px;
-          min-width: 350px;
-          max-width: 350px;
-          background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 0 15px rgba(0, 100, 0, 0.3); /* Darker green-tinted box shadow */
-          border: 1px solid rgba(0, 255, 0, 0.4); /* Green tinted border */
-          backdrop-filter: blur(10px);
+          .form-container {
+            width: 350px;
+            min-width: 350px;
+            max-width: 350px;
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 100, 0, 0.3); /* Darker green-tinted box shadow */
+            border: 1px solid rgba(0, 255, 0, 0.4); /* Green tinted border */
+            backdrop-filter: blur(10px);
           }
           .form-group {
             margin-bottom: 8px;
@@ -231,7 +221,7 @@ function StockMaintenance() {
           .form-header {
             text-align: center;
             margin-bottom: 8px;
-            color:#32CD32;
+            color: #32CD32;
           }
           .form-group strong {
             margin-top: 4px;
@@ -276,7 +266,7 @@ function StockMaintenance() {
             <>
               <div className="form-group">
                 <label htmlFor="removed-expiry">
-                  Quantity Issued :
+                  Quantity Issued (Removed):
                 </label>
                 <input
                   type="number"
@@ -307,22 +297,33 @@ function StockMaintenance() {
                   step="0.01"
                   onChange={(e) => handleQuantityChange(e, "added")}
                 />
+                <p className="note">
+                  Note: If the quantity added has the same expiration date,
+                  update it. Otherwise, add it as a new reagent.
+                </p>
               </div>
               <div className="form-group">
-
                 <p>
-                  <strong style={{ fontFamily: 'Arial, sans-serif',fontSize:"18px" }}>
+                  <strong
+                    style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: "18px",
+                    }}
+                  >
                     Total Quantity: {calculateTotalQuantity()}
-                  </strong> &#160;
-                  <div style={{ fontWeight: '300', fontFamily: 'Arial, sans-serif',display:"inline",fontSize:"13px" }}>
+                  </strong>{" "}
+                  &#160;
+                  <div
+                    style={{
+                      fontWeight: "300",
+                      fontFamily: "Arial, sans-serif",
+                      display: "inline",
+                      fontSize: "13px",
+                    }}
+                  >
                     &#215; {selectedReagent.quantity_measure}
                   </div>
-
                 </p>
-
-
-
-
               </div>
               <div className="form-actions">
                 <button type="submit">Update Stock</button>
