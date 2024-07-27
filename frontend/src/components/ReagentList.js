@@ -212,11 +212,11 @@ function ReagentList() {
         <div style={styles.colorLabelContainer}>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.greenDot }}></span> ≥
-            30 days
+            Alert
           </div>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.orangeDot }}></span>{" "}
-            &lt; 30 days
+            &lt; Alert
           </div>
           <div style={styles.colorLabel}>
             <span style={{ ...styles.colorDot, ...styles.redDot }}></span> 0
@@ -228,25 +228,29 @@ function ReagentList() {
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={{ ...styles.th, width: "30%" }}>Name</th>
-              <th style={{ ...styles.th, width: "10%" }}>Quantity</th>
-              <th style={{ ...styles.th, width: "10%" }}>Quantity Measure</th>
-              <th style={styles.th}>Source</th>
-              <th style={styles.th}>Expiry</th>
-              <th style={styles.th}>Days to Expire</th>
-              <th style={styles.th}>Last Updated</th>
-              <th style={styles.th}>Actions</th>
+              <th style={{ ...styles.th, width: "21%" }}>Name</th>
+              <th style={{ ...styles.th, width: "5%" }}>Units Available</th>
+              <th style={{ ...styles.th, width: "9%" }}>Packing Type</th>
+              <th style={{ ...styles.th, width: "9%" }}>Unit Size</th>
+              <th style={{ ...styles.th, width: "10%" }}>Source</th>
+              <th style={{ ...styles.th, width: "9%" }}>Expiry</th>
+              <th style={{ ...styles.th, width: "9%" }}>Days to Expire</th>
+              <th style={{ ...styles.th, width: "10%" }}>Last Updated</th>
+              <th style={{...styles.th,width: "10%"}}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredReagents.map((reagent, index) => {
+              const Alert = reagent.setAlert
               const daysToExpire = getDaysToExpire(reagent.expiry);
+              const quantityAlert = reagent.setQuantity
+              const quantity = reagent.quantity
               const textColor =
                 daysToExpire === 0
                   ? "red"
-                  : daysToExpire < 30
-                  ? "orange"
-                  : "green";
+                  : (daysToExpire <= Alert) || (quantity <= quantityAlert)
+                    ? "orange"
+                    : "green";
               const backgroundColor = index % 2 === 0 ? "#f9f9f9" : "#e0e0e0";
               const formattedExpiry = moment(reagent.expiry).format("DD-MM-YYYY");
               const formattedLastUpdated = moment(reagent.last_updated).format(
@@ -266,15 +270,18 @@ function ReagentList() {
                   >
                     {reagent.name}
                   </td>
-                  <td style={{ ...styles.td, width: "10%" }}>
+                  <td style={{ ...styles.td, width: "5%" }}>
                     {reagent.quantity}
                   </td>
-                 
+                  <td style={{ ...styles.td, width: "10%" }}>
+                    {reagent.packingtype}
+                  </td>
+
                   <td style={{ ...styles.td, width: "10%" }}>
                     {reagent.quantity_measure}
                   </td>
-                  <td style={styles.td}>{reagent.source}</td>
-                  <td style={styles.td}>{formattedExpiry}</td>
+                  <td style={{ ...styles.td, width: "10%" }}>{reagent.source}</td>
+                  <td style={{ ...styles.td, width: "10%" }}>{formattedExpiry}</td>
                   <td style={styles.td}>{daysToExpire}</td>
                   <td style={styles.td}>{formattedLastUpdated}</td>
                   <td

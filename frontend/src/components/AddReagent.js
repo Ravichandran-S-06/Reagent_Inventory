@@ -7,10 +7,13 @@ import moment from "moment";
 function AddReagent() {
   const [reagent, setReagent] = useState({
     name: "",
+    packingtype:"",
     quantity: "",
     quantity_measure: "",
     source: "",
     expiry: "",
+    setAlert:"",
+    setQuantity:"",
     last_updated: moment().format("YYYY-MM-DD"), // Initialize last_updated with current date
   });
   const navigate = useNavigate();
@@ -20,7 +23,7 @@ function AddReagent() {
   };
 
   const validateForm = () => {
-    const { quantity, quantity_measure, source, expiry } = reagent;
+    const { quantity, quantity_measure, source, expiry,setQuantity } = reagent;
     const currentDate = new Date().toISOString().split("T")[0];
 
     if (quantity < 0 || isNaN(quantity)) {
@@ -28,9 +31,19 @@ function AddReagent() {
       return false;
     }
 
-    if (!/^[a-zA-Z]+-?\d*|\d+[a-zA-Z]+$/.test(quantity_measure)) {
+    if (!/^[a-zA-Z0-9\s]*$/.test(quantity_measure)) {
       toast.error(
         "The measure must include letters, and may include numbers along with letters, but numbers alone are not allowed.",
+        {
+          theme: "dark",
+        }
+      );
+      return false;
+    }
+
+    if (!/^[0-9\s]*$/.test(setQuantity)) {
+      toast.error(
+        "Quantity Alert should always be in Number",
         {
           theme: "dark",
         }
@@ -150,6 +163,16 @@ function AddReagent() {
         </div>
         <div style={styles.formGroup}>
           <input
+            type="text"
+            name="packingtype"
+            placeholder="packing type"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+          </div>
+        <div style={styles.formGroup}>
+          <input
             type="number"
             name="quantity"
             placeholder="Quantity"
@@ -163,7 +186,7 @@ function AddReagent() {
           <input
             type="text"
             name="quantity_measure"
-            placeholder="Quantity Measure"
+            placeholder="Unit size / volume"
             onChange={handleChange}
             required
             style={styles.input}
@@ -187,6 +210,34 @@ function AddReagent() {
             type="date"
             id="expiry"
             name="expiry"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label htmlFor="Set Alert" style={styles.label}>
+            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in days</p>
+          </label>
+          <input
+            type="number"
+            id="setAlert"
+            name="setAlert"
+            placeholder="in days"
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
+        </div>
+        <div style={styles.formGroup}>
+          <label htmlFor="Set Alert Quantity" style={styles.label}>
+            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in quantities</p>
+          </label>
+          <input
+            type="number"
+            id="setQuantity"
+            name="setQuantity"
+            placeholder="in Quantities"
             onChange={handleChange}
             required
             style={styles.input}
