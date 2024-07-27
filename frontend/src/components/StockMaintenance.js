@@ -98,7 +98,6 @@ function StockMaintenance() {
         return response.json();
       })
       .then((data) => {
-
         // After successful stock update, send an email
         // const emailData = {
         //   when: new Date().toISOString(),
@@ -108,19 +107,19 @@ function StockMaintenance() {
 
         // After successful stock update, send an email
         const emailData = {
-          dbData: reagents
+          dbData: reagents,
         };
 
-        fetch('http://localhost:5000/send-email', {
-          method: 'POST',
+        fetch("http://localhost:5000/send-email", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(emailData),
         })
-          .then(emailResponse => {
+          .then((emailResponse) => {
             if (!emailResponse.ok) {
-              throw new Error('Failed to send email');
+              throw new Error("Failed to send email");
             }
             return emailResponse.json();
           })
@@ -129,7 +128,7 @@ function StockMaintenance() {
               theme: "dark",
             });
           })
-          .catch(emailError => {
+          .catch((emailError) => {
             toast.error("Failed to send email: " + emailError.message, {
               theme: "dark",
             });
@@ -275,7 +274,7 @@ function StockMaintenance() {
             <>
               <div className="form-group">
                 <label htmlFor="removed-expiry">
-                  Quantity Issued :
+                  Quantity Issued (Removed):
                 </label>
                 <input
                   type="number"
@@ -308,20 +307,27 @@ function StockMaintenance() {
                 />
               </div>
               <div className="form-group">
-
                 <p>
-                  <strong style={{ fontFamily: 'Arial, sans-serif',fontSize:"18px" }}>
+                  <strong
+                    style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: "18px",
+                    }}
+                  >
                     Total Quantity: {calculateTotalQuantity()}
-                  </strong> &#160;
-                  <div style={{ fontWeight: '300', fontFamily: 'Arial, sans-serif',display:"inline",fontSize:"13px" }}>
+                  </strong>{" "}
+                  &#160;
+                  <div
+                    style={{
+                      fontWeight: "300",
+                      fontFamily: "Arial, sans-serif",
+                      display: "inline",
+                      fontSize: "13px",
+                    }}
+                  >
                     &#215; {selectedReagent.quantity_measure}
                   </div>
-
                 </p>
-
-
-
-
               </div>
               <div className="form-actions">
                 <button type="submit">Update Stock</button>

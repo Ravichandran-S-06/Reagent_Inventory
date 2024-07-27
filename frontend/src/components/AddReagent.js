@@ -7,13 +7,13 @@ import moment from "moment";
 function AddReagent() {
   const [reagent, setReagent] = useState({
     name: "",
-    packingtype:"",
+    packingtype: "",
     quantity: "",
     quantity_measure: "",
     source: "",
     expiry: "",
-    setAlert:"",
-    setQuantity:"",
+    setAlert: "",
+    setQuantity: "",
     last_updated: moment().format("YYYY-MM-DD"), // Initialize last_updated with current date
   });
   const navigate = useNavigate();
@@ -23,7 +23,15 @@ function AddReagent() {
   };
 
   const validateForm = () => {
-    const { quantity, quantity_measure, source, expiry,setQuantity } = reagent;
+    const {
+      quantity,
+      quantity_measure,
+      source,
+      expiry,
+      setAlert,
+      setQuantity,
+      packingtype,
+    } = reagent;
     const currentDate = new Date().toISOString().split("T")[0];
 
     if (quantity < 0 || isNaN(quantity)) {
@@ -41,9 +49,22 @@ function AddReagent() {
       return false;
     }
 
-    if (!/^[0-9\s]*$/.test(setQuantity)) {
+    if (setAlert < 0) {
+      toast.error("Alert days cannot be negative.", { theme: "dark" });
+      return false;
+    }
+
+    if (setQuantity < 0) {
+      toast.error("Alert quantity cannot be negative.", { theme: "dark" });
+      return false;
+    }
+
+    if (
+      !/^[a-zA-Z0-9\s]*$/.test(packingtype) ||
+      /^[0-9\s]*$/.test(packingtype)
+    ) {
       toast.error(
-        "Quantity Alert should always be in Number",
+        "Packing type must include alphanumeric characters or just characters, but not just numbers.",
         {
           theme: "dark",
         }
@@ -165,12 +186,12 @@ function AddReagent() {
           <input
             type="text"
             name="packingtype"
-            placeholder="packing type"
+            placeholder="Packing type"
             onChange={handleChange}
             required
             style={styles.input}
           />
-          </div>
+        </div>
         <div style={styles.formGroup}>
           <input
             type="number"
@@ -217,7 +238,16 @@ function AddReagent() {
         </div>
         <div style={styles.formGroup}>
           <label htmlFor="Set Alert" style={styles.label}>
-            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in days</p>
+            Set Alert{" "}
+            <p
+              style={{
+                display: "inline",
+                fontWeight: "lighter",
+                fontSize: "13px",
+              }}
+            >
+              in days
+            </p>
           </label>
           <input
             type="number"
@@ -227,11 +257,21 @@ function AddReagent() {
             onChange={handleChange}
             required
             style={styles.input}
+            min="0" // Ensure only non-negative values can be entered
           />
         </div>
         <div style={styles.formGroup}>
           <label htmlFor="Set Alert Quantity" style={styles.label}>
-            Set Alert <p style={{display:"inline",fontWeight:"lighter",fontSize:"13px"}}>in quantities</p>
+            Set Alert{" "}
+            <p
+              style={{
+                display: "inline",
+                fontWeight: "lighter",
+                fontSize: "13px",
+              }}
+            >
+              in quantities
+            </p>
           </label>
           <input
             type="number"
@@ -241,6 +281,7 @@ function AddReagent() {
             onChange={handleChange}
             required
             style={styles.input}
+            min="0" // Ensure only non-negative values can be entered
           />
         </div>
         <button type="submit" style={styles.button}>
