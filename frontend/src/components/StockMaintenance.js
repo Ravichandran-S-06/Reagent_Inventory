@@ -99,13 +99,6 @@ function StockMaintenance() {
       })
       .then((data) => {
         // After successful stock update, send an email
-        // const emailData = {
-        //   when: new Date().toISOString(),
-        //   what: selectedReagent.name,
-        //   howMuch: updatedQuantity,
-        // };
-
-        // After successful stock update, send an email
         const emailData = {
           dbData: reagents,
         };
@@ -176,17 +169,16 @@ function StockMaintenance() {
             box-sizing: border-box;
             overflow-y: hidden;
           }
-           
-          .form-container { 
-          width: 350px;
-          min-width: 350px;
-          max-width: 350px;
-          background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
-          padding: 20px;
-          border-radius: 10px;
-          box-shadow: 0 0 15px rgba(0, 100, 0, 0.3); /* Darker green-tinted box shadow */
-          border: 1px solid rgba(0, 255, 0, 0.4); /* Green tinted border */
-          backdrop-filter: blur(10px);
+          .form-container {
+            width: 350px;
+            min-width: 350px;
+            max-width: 350px;
+            background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 100, 0, 0.3); /* Darker green-tinted box shadow */
+            border: 1px solid rgba(0, 255, 0, 0.4); /* Green tinted border */
+            backdrop-filter: blur(10px);
           }
           .form-group {
             margin-bottom: 8px;
@@ -229,7 +221,7 @@ function StockMaintenance() {
           .form-header {
             text-align: center;
             margin-bottom: 8px;
-            color:#32CD32;
+            color: #32CD32;
           }
           .form-group strong {
             margin-top: 4px;
@@ -305,6 +297,10 @@ function StockMaintenance() {
                   step="0.01"
                   onChange={(e) => handleQuantityChange(e, "added")}
                 />
+                <p className="note">
+                  Note: If the quantity added has the same expiration date,
+                  update it. Otherwise, add it as a new reagent.
+                </p>
               </div>
               <div className="form-group">
                 <p>
