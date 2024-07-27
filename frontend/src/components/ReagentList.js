@@ -199,9 +199,9 @@ function ReagentList() {
         <div style={styles.sortContainer}>
           <select style={styles.sortSelect} onChange={handleSort}>
             <option value="last_updated">Sort by: Modify</option>
-            <option value="name">Sort by: Name</option>
-            <option value="days_to_expire">Sort by: Days to Expire</option>
-            <option value="quantity">Sort by: Units Available</option>
+            <option value="name">Name</option>
+            <option value="days_to_expire">Days to Expire</option>
+            <option value="quantity">Units Available</option>
           </select>
         </div>
         <input
@@ -249,11 +249,12 @@ function ReagentList() {
               const quantityAlert = reagent.setQuantity;
               const quantity = reagent.quantity;
               const textColor =
-                daysToExpire === 0
+                daysToExpire === 0 || quantity === 0
                   ? "red"
                   : daysToExpire <= Alert || quantity <= quantityAlert
                   ? "orange"
                   : "green";
+
               const backgroundColor = index % 2 === 0 ? "#f9f9f9" : "#e0e0e0";
               const formattedExpiry = moment(reagent.expiry).format(
                 "DD-MM-YYYY"
