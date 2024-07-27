@@ -85,6 +85,8 @@ function ReagentList() {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       } else if (sortCriteria === "days_to_expire") {
         return getDaysToExpire(a.expiry) - getDaysToExpire(b.expiry);
+      } else if (sortCriteria === "quantity") {
+        return a.quantity - b.quantity;
       } else {
         return moment(b.last_updated).diff(moment(a.last_updated));
       }
@@ -199,6 +201,7 @@ function ReagentList() {
             <option value="last_updated">Sort by: Modify</option>
             <option value="name">Sort by: Name</option>
             <option value="days_to_expire">Sort by: Days to Expire</option>
+            <option value="quantity">Sort by: Units Available</option>
           </select>
         </div>
         <input
@@ -339,4 +342,5 @@ function ReagentList() {
     </div>
   );
 }
+
 export default ReagentList;
