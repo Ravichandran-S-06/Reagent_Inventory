@@ -48,8 +48,8 @@ function EditReagent() {
     quantity_measure: "",
     source: "",
     expiry: "",
-    setAlert:"",
-    setQuantity:"",
+    setAlert: "",
+    setQuantity: "",
     last_updated: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -61,7 +61,7 @@ function EditReagent() {
       .then((data) => {
         setReagent({
           ...data,
-          last_updated: moment(data.last_updated).format("YYYY-MM-DD"), // Adjusted date format
+          last_updated: moment(data.last_updated).format("YYYY-MM-DD"),
         });
       })
       .catch((error) => console.error("Error fetching reagent:", error));
@@ -83,19 +83,23 @@ function EditReagent() {
       return;
     }
 
-    //create a validation to quantity_measure, it must always be a alpha numeric
-
-    // if (!/^[a-zA-Z]*$/.test(reagent.quantity_measure)) {
-    //   toast.error("Measure must only include characters.", {
-    //     theme: "dark",
-    //   });
-    //   return;
-    // }
-
     if (!/^[a-zA-Z0-9\s]*$/.test(reagent.quantity_measure)) {
       toast.error("Measure must only include alphanumeric characters.", {
         theme: "dark",
       });
+      return;
+    }
+
+    if (
+      !/^[a-zA-Z0-9\s]*$/.test(reagent.packingtype) ||
+      /^[0-9\s]*$/.test(reagent.packingtype)
+    ) {
+      toast.error(
+        "Packing type must include alphanumeric characters or just characters, but not just numbers.",
+        {
+          theme: "dark",
+        }
+      );
       return;
     }
 
@@ -115,13 +119,23 @@ function EditReagent() {
       return;
     }
 
+    if (reagent.setAlert < 0) {
+      toast.error("Alert days cannot be negative.", { theme: "dark" });
+      return;
+    }
+
+    if (reagent.setQuantity < 0) {
+      toast.error("Alert quantity cannot be negative.", { theme: "dark" });
+      return;
+    }
+
     handleSubmit(e);
   };
 
   const handleSubmit = (e) => {
     const updatedReagent = {
       ...reagent,
-      last_updated: moment().format("YYYY-MM-DD"), // Adjusted date format
+      last_updated: moment().format("YYYY-MM-DD"),
     };
 
     fetch(`http://localhost:5000/reagents/${id}`, {
@@ -147,17 +161,19 @@ function EditReagent() {
 
   return (
     <div className="edit-reagent-container" style={styles.container}>
-      <h1 style={{ color: "#32CD32",marginTop:"9px",marginBottom:"9px" }}>Edit Reagents.</h1>
+      <h1 style={{ color: "#32CD32", marginTop: "9px", marginBottom: "9px" }}>
+        Edit Reagents.
+      </h1>
       <form
         className="edit-reagent-form"
-        ID="edit_reagent_form"
+        id="edit_reagent_form"
         onSubmit={validateAndSubmit}
         style={styles.form}
       >
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="text"
             id="name"
             name="name"
@@ -169,7 +185,7 @@ function EditReagent() {
         <div className="form-group">
           <label htmlFor="packingtype">Packing Type:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="text"
             id="packingtype"
             name="packingtype"
@@ -181,7 +197,7 @@ function EditReagent() {
         <div className="form-group">
           <label htmlFor="quantity">Quantity:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="number"
             id="quantity"
             name="quantity"
@@ -194,7 +210,7 @@ function EditReagent() {
         <div className="form-group">
           <label htmlFor="quantity_measure">Measure:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="text"
             id="quantity_measure"
             name="quantity_measure"
@@ -206,7 +222,7 @@ function EditReagent() {
         <div className="form-group">
           <label htmlFor="source">Source:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="text"
             id="source"
             name="source"
@@ -218,7 +234,7 @@ function EditReagent() {
         <div className="form-group">
           <label htmlFor="expiry">Expiry Date:</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="date"
             id="expiry"
             name="expiry"
@@ -228,9 +244,9 @@ function EditReagent() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="setAlert">Set Alert</label>
+          <label htmlFor="setAlert">Set Alert (in days):</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="number"
             id="setAlert"
             name="setAlert"
@@ -238,19 +254,21 @@ function EditReagent() {
             onChange={handleChange}
             placeholder="in days"
             required
+            min="0"
           />
         </div>
         <div className="form-group">
-          <label htmlFor="setQuantity">Set Alert</label>
+          <label htmlFor="setQuantity">Set Alert (in quantities):</label>
           <input
-          style = {styles.input}
+            style={styles.input}
             type="number"
             id="setQuantity"
             name="setQuantity"
             value={reagent.setQuantity}
             onChange={handleChange}
-            placeholder="in Quantities"
+            placeholder="in quantities"
             required
+            min="0"
           />
         </div>
         <button type="submit">Save Changes</button>
@@ -288,23 +306,23 @@ const styles = {
     alignItems: "center",
     justifyContent: "flex-start",
     maxHeight: "100vh",
-    overflow: "hidden", // Prevents scroll bar from appearing
-    paddingTop: "0px", // Adjusted to move form higher vertically
+    overflow: "hidden",
+    paddingTop: "0px",
   },
   form: {
     width: "100%",
     maxWidth: "400px",
     margin: "0 auto",
     minWidth: "400px",
-    backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent white background
-    padding: "20px",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    padding: "8px 26px",
     borderRadius: "10px",
-    boxShadow: "0 0 10px rgba(0, 100, 0, 0.3)", // Darker green-tinted box shadow
-    border: "1px solid rgba(0, 255, 0, 0.4)", // Green tinted border
+    boxShadow: "0 0 10px rgba(0, 100, 0, 0.3)",
+    border: "1px solid rgba(0, 255, 0, 0.4)",
     backdropFilter: "blur(10px)",
   },
-  input:{
-    width:"97%",
-    marginBottom:"5px"
-  }
+  input: {
+    width: "97%",
+    marginBottom: "5px",
+  },
 };
