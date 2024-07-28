@@ -306,7 +306,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "flex-start",
     maxHeight: "100vh",
-    overflow: "hidden",
+    overflow: "auto",
     paddingTop: "0px",
   },
   form: {
